@@ -1,0 +1,436 @@
+<div [formGroup]="svcPedido.formGeneral" class="row my-2">
+    <!--FORMULARIO FIBRA-->
+    <ng-template #frmFibra>
+        <div class="col-12 col-md-6">
+            <ng-container formArrayName="pedidoProductosFibra">
+                <mat-card class="card bg-light border-light"
+                    *ngFor="let _ of svcPedidoProductos.frmProdFibra.controls; index as i">
+                    <ng-container [formGroupName]="i">
+                        <mat-card-header class="card-header d-flex align-items-center">
+                            <mat-card-title>Fibra Optica</mat-card-title>
+                            <span class="fill-remaining-space"></span>
+                            <button type="button" mat-icon-button color="primary"
+                                (click)="svcPedidoProductos.removerProducto(i, svcPedidoProductos.frmProdFibra.controls[i]?.value.idTipoProducto)">
+                                <mat-icon>close</mat-icon>
+                            </button>
+                        </mat-card-header>
+
+                        <mat-card-content class="card-body">
+                            <div class="row">
+                                <ng-container *ngFor="let campo of svcPedidoProductos.camposForm">
+                                    <!--TEXTS-->
+                                    <div *ngIf="campo.tipo=='text' && svcPedidoProductos.frmProdFibra.controls[i].get(campo.clave).disabled==false"
+                                        [class]="campo.cols" class="my-2">
+                                        <mat-form-field>
+                                            <ng-container *ngIf="campo.clave=='numeroFijo'; else inputFibraOptica">
+                                                <input [formControlName]="campo.clave" matInput
+                                                    placeholder="Número Fijo" />
+                                            </ng-container>
+                                            <ng-template #inputFibraOptica>
+                                                <input [formControlName]="campo.clave" matInput
+                                                    [placeholder]="campo.titulo" />
+                                            </ng-template>
+                                            <mat-error
+                                                *ngIf="svcPedidoProductos.frmProdFibra.controls[i].get(campo.clave).invalid && (svcPedidoProductos.frmProdFibra.controls[i].get(campo.clave).dirty || svcPedidoProductos.frmProdFibra.controls[i].get(campo.clave).touched)">
+                                                <mat-error
+                                                    *ngIf="svcPedidoProductos.frmProdFibra.controls[i].get(campo.clave).errors.required">
+                                                    Este campo es obligatorio.</mat-error>
+                                                <mat-error
+                                                    *ngIf="svcPedidoProductos.frmProdFibra.controls[i].get(campo.clave).errors.maxlength">
+                                                    Sobrepaso el numero maximo de caracteres.
+                                                </mat-error>
+                                                <mat-error
+                                                    *ngIf="svcPedidoProductos.frmProdFibra.controls[i].get(campo.clave).errors.email">
+                                                    Ingrese un email valido.</mat-error>
+                                            </mat-error>
+                                        </mat-form-field>
+                                    </div>
+                                    <!--RADIOGROUP-->
+                                    <div *ngIf="campo.tipo=='radio' && svcPedidoProductos.frmProdFibra.controls[i].get(campo.clave).disabled==false"
+                                        [class]="campo.cols" class="my-2">
+                                        <mat-radio-group [formControlName]="campo.clave"
+                                            (change)="svcPedidoProductos.cambioRadioBtn(i, campo.clave, svcPedidoProductos.frmProdFibra.controls[i].value.idTipoProducto)">
+                                            <ng-container *ngIf="campo.clave=='flagPortabilidad'">
+                                                <mat-radio-button value="1">Portabilidad</mat-radio-button>
+                                                <mat-radio-button value="0">Alta</mat-radio-button>
+                                            </ng-container>
+                                            <ng-container *ngIf="campo.clave=='flagMismoTitular'">
+                                                <mat-radio-button value="1">Mismo Titular</mat-radio-button>
+                                                <mat-radio-button value="0">Otro Titular</mat-radio-button>
+                                            </ng-container>
+                                        </mat-radio-group>
+                                        <mat-error
+                                            *ngIf="svcPedidoProductos.frmProdFibra.controls[i].get(campo.clave).invalid && (svcPedidoProductos.frmProdFibra.controls[i].get(campo.clave).dirty || svcPedidoProductos.frmProdFibra.controls[i].get(campo.clave).touched)">
+                                            <mat-error
+                                                *ngIf="svcPedidoProductos.frmProdFibra.controls[i].get(campo.clave).errors.required">
+                                                Este campo es obligatorio.</mat-error>
+                                            <mat-error
+                                                *ngIf="svcPedidoProductos.frmProdFibra.controls[i].get(campo.clave).errors.maxlength">
+                                                Sobrepaso el numero maximo de caracteres.
+                                            </mat-error>
+                                            <mat-error
+                                                *ngIf="svcPedidoProductos.frmProdFibra.controls[i].get(campo.clave).errors.email">
+                                                Ingrese un email valido.</mat-error>
+                                        </mat-error>
+                                    </div>
+                                    <!--SELECT-->
+                                    <div *ngIf="campo.tipo=='select' && svcPedidoProductos.frmProdFibra.controls[i].get(campo.clave).disabled==false"
+                                        [class]="campo.cols" class="my-2">
+                                        <mat-form-field>
+                                            <mat-select [formControlName]="campo.clave" [placeholder]="campo.titulo"
+                                                (selectionChange)="svcPedidoProductos.cambioSelect(i, campo.clave)">
+                                                <ng-container *ngIf="campo.clave=='idPlan'">
+                                                    <mat-option disabled>{{ campo.titulo }}</mat-option>
+                                                    <mat-option
+                                                        *ngFor="let option of svcPedidoProductos.getPlanes(i, svcPedidoProductos.frmProdFibra.value[i].idTipoProducto)"
+                                                        [value]="option['idPlan']"
+                                                        matTooltip="Este plan se encuentra inactivo"
+                                                        [matTooltipDisabled]="option.estado=='Activo'">
+                                                        <span>{{ option.plan }}</span>
+                                                    </mat-option>
+                                                </ng-container>
+
+                                                <ng-container *ngIf="campo.clave=='idTipoDocumento'">
+                                                    <mat-option>{{ campo.titulo }}</mat-option>
+                                                    <ng-container *ngIf="tiposDocumentos$ | async as tipoDocumento">
+                                                        <mat-option *ngFor="let option of tipoDocumento.Resultado"
+                                                            [value]="option['idTipoDocumento']">
+                                                            {{ option.descripcion }}</mat-option>
+                                                    </ng-container>
+                                                </ng-container>
+                                                <ng-container *ngIf="campo.clave=='idOperador'">
+                                                    <mat-option>{{ campo.titulo }}</mat-option>
+                                                    <ng-container *ngIf="operadores$ | async as operadores">
+                                                        <mat-option *ngFor="let option of operadores.Resultado"
+                                                            [value]="option['idOperador']">{{ option.descripcion }}
+                                                        </mat-option>
+                                                    </ng-container>
+                                                </ng-container>
+                                                <ng-container *ngIf="campo.clave=='idTipoPlan'">
+                                                    <mat-option>{{ campo.titulo }}</mat-option>
+                                                    <ng-container *ngIf="tiposPlanes$ | async as tipoPlan">
+                                                        <mat-option *ngFor="let option of tipoPlan.Resultado"
+                                                            [value]="option['idTipoPlan']">{{ option.descripcion }}
+                                                        </mat-option>
+                                                    </ng-container>
+                                                </ng-container>
+                                            </mat-select>
+                                            <mat-icon matSuffix matTooltip="Este plan se encuentra inactivo"
+                                                *ngIf="svcPedidoProductos.planInactivo(svcPedidoProductos.frmProdFibra.controls[i].get('idPlan').value)==true && campo.clave=='idPlan'"
+                                                color="warn" class="mx-1">error</mat-icon>
+                                            <mat-hint
+                                                *ngIf="svcPedidoProductos.planInactivo(svcPedidoProductos.frmProdFibra.controls[i].get('idPlan').value)==true && campo.clave=='idPlan'">
+                                                ¡El plan seleccionado se encuentra inactivo!</mat-hint>
+                                            <mat-error
+                                                *ngIf="svcPedidoProductos.frmProdFibra.controls[i].get(campo.clave).invalid && (svcPedidoProductos.frmProdFibra.controls[i].get(campo.clave).dirty || svcPedidoProductos.frmProdFibra.controls[i].get(campo.clave).touched)">
+                                                <mat-error
+                                                    *ngIf="svcPedidoProductos.frmProdFibra.controls[i].get(campo.clave).errors.required">
+                                                    Este campo es obligatorio.</mat-error>
+                                                <mat-error
+                                                    *ngIf="svcPedidoProductos.frmProdFibra.controls[i].get(campo.clave).errors.maxlength">
+                                                    Sobrepaso el numero maximo de caracteres.
+                                                </mat-error>
+                                                <mat-error
+                                                    *ngIf="svcPedidoProductos.frmProdFibra.controls[i].get(campo.clave).errors.email">
+                                                    Ingrese un email valido.</mat-error>
+                                            </mat-error>
+                                        </mat-form-field>
+                                    </div>
+                                </ng-container>
+
+                            </div>
+                        </mat-card-content>
+                    </ng-container>
+                </mat-card>
+            </ng-container>
+        </div>
+    </ng-template>
+    <div class="col-12 col-md-6" *ngIf="svcPedidoProductos.frmProdFibra.value.length==0; else frmFibra">
+        <mat-card class="card bg-light border-light">
+            <mat-card-header class="card-header d-flex justify-content-center">
+                <span>Fibra Optica</span>
+            </mat-card-header>
+            <mat-card-content class="card-body d-flex justify-content-center">
+                <button type="button" mat-mini-fab color="primary" (click)="svcPedidoProductos.agregarProductoFibra()">
+                    <mat-icon>add</mat-icon>
+                </button>
+            </mat-card-content>
+        </mat-card>
+    </div>
+    <!--FORMULARIO TV-->
+    <ng-template #frmTvMovil>
+        <div class="col-12 col-md-6">
+            <ng-container formArrayName="pedidoProductosTvMovil">
+                <mat-card class="card bg-light border-light"
+                    *ngFor="let _ of svcPedidoProductos.frmProdTvMovil.controls; index as i">
+                    <ng-container [formGroupName]="i">
+                        <mat-card-header class="card-header d-flex align-items-center">
+                            <mat-card-title>Tv Movil</mat-card-title>
+                            <span class="fill-remaining-space"></span>
+                            <button type="button" mat-icon-button color="primary"
+                                (click)="svcPedidoProductos.removerProducto(i, svcPedidoProductos.frmProdTvMovil.controls[i]?.value.idTipoProducto)">
+                                <mat-icon>close</mat-icon>
+                            </button>
+                        </mat-card-header>
+                        <mat-card-content class="card-body">
+                            <div class="row">
+                                <ng-container *ngFor="let campo of svcPedidoProductos.camposForm">
+                                    <!--RADIOGROUP-->
+                                    <div [class]="campo.cols" class="my-2" *ngIf="campo.tipo=='radio' && campo.clave=='flagConTV' && svcPedidoProductos.frmProdTvMovil.controls[i].get([campo.clave ])?.disabled==false && svcPedidoProductos.getPlanes(0, svcPedidoProductos.frmProdTvMovil.controls[i]?.value
+                                .idTipoProducto).length==0">
+                                        <mat-radio-group [formControlName]="campo.clave">
+                                            <mat-radio-button value="1">Con TV</mat-radio-button>
+                                            <mat-radio-button value="0">Sin TV</mat-radio-button>
+                                        </mat-radio-group>
+                                        <mat-error
+                                            *ngIf="svcPedidoProductos.frmProdTvMovil.controls[i]?.get(campo.clave).invalid && (svcPedidoProductos.frmProdTvMovil.controls[i]?.get(campo.clave).dirty || svcPedidoProductos.frmProdTvMovil.controls[i]?.get(campo.clave).touched)">
+                                            <mat-error
+                                                *ngIf="svcPedidoProductos.frmProdTvMovil.controls[i]?.get(campo.clave).errors.required">
+                                                Este campo es obligatorio.</mat-error>
+                                            <mat-error
+                                                *ngIf="svcPedidoProductos.frmProdTvMovil.controls[i]?.get(campo.clave).errors.maxlength">
+                                                Sobrepaso el numero maximo de caracteres.
+                                            </mat-error>
+                                            <mat-error
+                                                *ngIf="svcPedidoProductos.frmProdTvMovil.controls[i]?.get(campo.clave).errors.email">
+                                                Ingrese un email valido.</mat-error>
+                                        </mat-error>
+                                    </div>
+                                    <div [class]="campo.cols" class="my-2" *ngIf="campo.tipo=='radio' && campo.clave=='flagDeco' && svcPedidoProductos.frmProdTvMovil.controls[i].get(campo.clave)?.disabled==false && svcPedidoProductos.getPlanes(0, svcPedidoProductos.frmProdTvMovil.controls[i]?.value
+                                .idTipoProducto).length !=0">
+                                        <mat-radio-group [formControlName]="campo.clave">
+                                            <mat-radio-button value="1">Con Deco
+                                            </mat-radio-button>
+                                            <mat-radio-button value="0">Sin Deco
+                                            </mat-radio-button>
+                                        </mat-radio-group>
+                                        <mat-error
+                                            *ngIf="svcPedidoProductos.frmProdTvMovil.controls[i]?.get(campo.clave).invalid && (svcPedidoProductos.frmProdTvMovil.controls[i]?.get(campo.clave).dirty || svcPedidoProductos.frmProdTvMovil.controls[i]?.get(campo.clave).touched)">
+                                            <mat-error
+                                                *ngIf="svcPedidoProductos.frmProdTvMovil.controls[i]?.get(campo.clave).errors.required">
+                                                Este campo es obligatorio.</mat-error>
+                                            <mat-error
+                                                *ngIf="svcPedidoProductos.frmProdTvMovil.controls[i]?.get(campo.clave).errors.maxlength">
+                                                Sobrepaso el numero maximo de caracteres.
+                                            </mat-error>
+                                            <mat-error
+                                                *ngIf="svcPedidoProductos.frmProdTvMovil.controls[i]?.get(campo.clave).errors.email">
+                                                Ingrese un email valido.</mat-error>
+                                        </mat-error>
+                                    </div>
+
+                                    <!--SELECT-->
+                                    <div [class]="campo.cols" class="my-2"
+                                        *ngIf="campo.tipo=='select' && svcPedidoProductos.frmProdTvMovil.controls[i].get(campo.clave)?.disabled==false && svcPedidoProductos.getPlanes(0, svcPedidoProductos.frmProdTvMovil.controls[i]?.value.idTipoProducto).length!=0">
+                                        <mat-form-field appearance="fill">
+                                            <mat-select [formControlName]="campo.clave" [placeholder]="campo.titulo"
+                                                multiple>
+                                                <mat-option
+                                                    *ngFor="let option of svcPedidoProductos.getPlanes(0, svcPedidoProductos.frmProdTvMovil.controls[i]?.value.idTipoProducto)"
+                                                    [value]="option['idPlan']"
+                                                    matTooltip="Este plan se encuentra inactivo"
+                                                    [matTooltipDisabled]="option.estado=='Activo'">
+                                                    <span>{{ option.plan }}</span>
+                                                </mat-option>
+                                            </mat-select>
+                                            <mat-icon matSuffix matTooltip="Este plan se encuentra inactivo"
+                                                *ngIf="svcPedidoProductos.planInactivoMultiple(svcPedidoProductos.frmProdTvMovil.controls[i].get(campo.clave).value)==true"
+                                                color="warn" class="mx-1">error</mat-icon>
+                                            <mat-hint
+                                                *ngIf="svcPedidoProductos.planInactivoMultiple(svcPedidoProductos.frmProdTvMovil.controls[i].get(campo.clave).value)==true">
+                                                ¡Ha escogido un plan(es) inactivo(s)!</mat-hint>
+                                            <mat-error
+                                                *ngIf="svcPedidoProductos.frmProdTvMovil.controls[i]?.get(campo.clave).invalid && (svcPedidoProductos.frmProdTvMovil.controls[i]?.get(campo.clave).dirty || svcPedidoProductos.frmProdTvMovil.controls[i]?.get(campo.clave).touched)">
+                                                <mat-error
+                                                    *ngIf="svcPedidoProductos.frmProdTvMovil.controls[i]?.get(campo.clave).errors.required">
+                                                    Este campo es obligatorio.</mat-error>
+                                                <mat-error
+                                                    *ngIf="svcPedidoProductos.frmProdTvMovil.controls[i]?.get(campo.clave).errors.maxlength">
+                                                    Sobrepaso el numero maximo de caracteres.
+                                                </mat-error>
+                                                <mat-error
+                                                    *ngIf="svcPedidoProductos.frmProdTvMovil.controls[i]?.get(campo.clave).errors.email">
+                                                    Ingrese un email valido.</mat-error>
+                                            </mat-error>
+                                        </mat-form-field>
+                                    </div>
+                                </ng-container>
+                            </div>
+                        </mat-card-content>
+                    </ng-container>
+                </mat-card>
+            </ng-container>
+        </div>
+    </ng-template>
+    <div class="col-12 col-md-6" *ngIf="svcPedidoProductos.frmProdTvMovil.value.length==0; else frmTvMovil">
+        <mat-card class="card bg-light border-light">
+            <mat-card-header class="card-header d-flex justify-content-center">
+                <span>Tv Movil</span>
+            </mat-card-header>
+            <mat-card-content class="card-body d-flex justify-content-center">
+                <button type="button" mat-mini-fab color="primary"
+                    (click)="svcPedidoProductos.agregarProductoTvMovil()">
+                    <mat-icon>add</mat-icon>
+                </button>
+            </mat-card-content>
+        </mat-card>
+    </div>
+    <!--FORMLARIO LINEAS MOVILES-->
+    <ng-container *ngIf="svcPedidoProductos.frmProdLineaMovil.value.length != 0">
+
+        <ng-container formArrayName="pedidoProductosLineaMovil">
+            <div class="col-12 col-md-6" *ngFor="let _ of svcPedidoProductos.frmProdLineaMovil.controls; index as i">
+                <mat-card class="card bg-light border-light">
+                    <ng-container [formGroupName]="i">
+                        <mat-card-header class="card-header d-flex align-items-center">
+                            <mat-card-title>
+                                {{ svcPedidoProductos.frmProdLineaMovil.controls[i].value.idTipoProducto == 1 ?"Fibra Optica" :"Linea Movil " + (i+1) }}
+                            </mat-card-title>
+                            <span class="fill-remaining-space"></span>
+                            <button type="button" mat-icon-button color="primary"
+                                (click)="svcPedidoProductos.removerProducto(i, svcPedidoProductos.frmProdLineaMovil.controls[i]?.value.idTipoProducto)">
+                                <mat-icon>close</mat-icon>
+                            </button>
+                        </mat-card-header>
+
+                        <mat-card-content class="card-body">
+                            <div class="row">
+                                <ng-container *ngFor="let campo of svcPedidoProductos.camposForm">
+                                    <!--TEXTS-->
+                                    <div [class]="campo.cols" class="my-2"
+                                        *ngIf="campo.tipo=='text' && svcPedidoProductos.frmProdLineaMovil.controls[i].get(campo.clave).disabled==false">
+                                        <mat-form-field>
+                                            <input [formControlName]="campo.clave" matInput
+                                                [placeholder]="campo.titulo" />
+                                            <mat-error
+                                                *ngIf="svcPedidoProductos.frmProdLineaMovil.controls[i].get(campo.clave).invalid && 
+                                            (svcPedidoProductos.frmProdLineaMovil.controls[i].get(campo.clave).dirty || 
+                                            svcPedidoProductos.frmProdLineaMovil.controls[i].get(campo.clave).touched)">
+                                                <mat-error
+                                                    *ngIf="svcPedidoProductos.frmProdLineaMovil.controls[i].get(campo.clave).errors.required">
+                                                    Este campo es obligatorio.</mat-error>
+                                                <mat-error
+                                                    *ngIf="svcPedidoProductos.frmProdLineaMovil.controls[i].get(campo.clave).errors.maxlength">
+                                                    Sobrepaso el numero maximo de caracteres.
+                                                </mat-error>
+                                                <mat-error
+                                                    *ngIf="svcPedidoProductos.frmProdLineaMovil.controls[i].get(campo.clave).errors.email">
+                                                    Ingrese un email valido.</mat-error>
+                                            </mat-error>
+                                        </mat-form-field>
+                                    </div>
+                                    <!--RADIOGROUP-->
+                                    <div [class]="campo.cols" class="my-2"
+                                        *ngIf="campo.tipo=='radio' && svcPedidoProductos.frmProdLineaMovil.controls[i].get(campo.clave).disabled==false">
+                                        <mat-radio-group [formControlName]="campo.clave"
+                                            (change)="svcPedidoProductos.cambioRadioBtn(i, campo.clave, svcPedidoProductos.frmProdLineaMovil.controls[i].value.idTipoProducto)">
+                                            <ng-container *ngIf="campo.clave=='flagPortabilidad'">
+                                                <mat-radio-button value="1">Portabilidad</mat-radio-button>
+                                                <mat-radio-button value="0">Alta</mat-radio-button>
+                                            </ng-container>
+                                            <ng-container *ngIf="campo.clave=='flagMismoTitular'">
+                                                <mat-radio-button value="1">Mismo Titular</mat-radio-button>
+                                                <mat-radio-button value="0">Otro Titular</mat-radio-button>
+                                            </ng-container>
+                                        </mat-radio-group>
+
+                                        <mat-error
+                                            *ngIf="svcPedidoProductos.frmProdLineaMovil.controls[i].get(campo.clave).invalid && (svcPedidoProductos.frmProdLineaMovil.controls[i].get(campo.clave).dirty || svcPedidoProductos.frmProdLineaMovil.controls[i].get(campo.clave).touched)">
+                                            <mat-error
+                                                *ngIf="svcPedidoProductos.frmProdLineaMovil.controls[i].get(campo.clave).errors.required">
+                                                Este campo es obligatorio.</mat-error>
+                                            <mat-error
+                                                *ngIf="svcPedidoProductos.frmProdLineaMovil.controls[i].get(campo.clave).errors.maxlength">
+                                                Sobrepaso el numero maximo de caracteres.
+                                            </mat-error>
+                                            <mat-error
+                                                *ngIf="svcPedidoProductos.frmProdLineaMovil.controls[i].get(campo.clave).errors.email">
+                                                Ingrese un email valido.</mat-error>
+                                        </mat-error>
+                                    </div>
+                                    <!--SELECT-->
+                                    <div [class]="campo.cols" class="my-2"
+                                        *ngIf="campo.tipo=='select' && svcPedidoProductos.frmProdLineaMovil.controls[i].get(campo.clave).disabled==false">
+                                        <mat-form-field>
+                                            <mat-select [formControlName]="campo.clave" [placeholder]="campo.titulo"
+                                                (selectionChange)=" svcPedidoProductos.cambioSelect(i, campo.clave, svcPedidoProductos.frmProdLineaMovil.controls[i].get(campo.clave).value)">
+                                                <ng-container *ngIf="campo.clave=='idPlan'">
+                                                    <mat-option disabled>{{ campo.titulo }}</mat-option>
+                                                    <mat-option
+                                                        *ngFor=" let option of svcPedidoProductos.getPlanes(i, svcPedidoProductos.frmProdLineaMovil.value[i].idTipoProducto)"
+                                                        [value]="option['idPlan']"
+                                                        matTooltip="Este plan se encuentra inactivo"
+                                                        [matTooltipDisabled]="option.estado=='Activo'">
+                                                        <span>{{ option.plan }}</span>
+                                                    </mat-option>
+                                                </ng-container>
+
+                                                <ng-container *ngIf="campo.clave=='idTipoDocumento'">
+                                                    <mat-option>{{ campo.titulo }}</mat-option>
+                                                    <ng-container *ngIf="tiposDocumentos$ | async as tipoDocumento">
+                                                        <mat-option *ngFor="let option of tipoDocumento.Resultado"
+                                                            [value]="option['idTipoDocumento']">
+                                                            {{ option.descripcion }}</mat-option>
+                                                    </ng-container>
+                                                </ng-container>
+                                                <ng-container *ngIf="campo.clave=='idOperador'">
+                                                    <mat-option>{{ campo.titulo }}</mat-option>
+                                                    <ng-container *ngIf="operadores$ | async as operadores">
+                                                        <mat-option *ngFor="let option of operadores.Resultado"
+                                                            [value]="option['idOperador']">{{ option.descripcion }}
+                                                        </mat-option>
+                                                    </ng-container>
+                                                </ng-container>
+                                                <ng-container *ngIf="campo.clave=='idTipoPlan'">
+                                                    <mat-option>{{ campo.titulo }}</mat-option>
+                                                    <ng-container *ngIf="tiposPlanes$ | async as tipoPlan">
+                                                        <mat-option *ngFor="let option of tipoPlan.Resultado"
+                                                            [value]="option['idTipoPlan']">{{ option.descripcion }}
+                                                        </mat-option>
+                                                    </ng-container>
+                                                </ng-container>
+                                            </mat-select>
+                                            <mat-icon matSuffix matTooltip="Este plan se encuentra inactivo"
+                                                *ngIf="svcPedidoProductos.planInactivo(svcPedidoProductos.frmProdLineaMovil.controls[i].get('idPlan').value)==true && campo.clave=='idPlan'"
+                                                color="warn" class="mx-1">error</mat-icon>
+                                            <mat-hint
+                                                *ngIf="svcPedidoProductos.planInactivo(svcPedidoProductos.frmProdLineaMovil.controls[i].get('idPlan').value)==true && campo.clave=='idPlan'">
+                                                ¡El plan seleccionado se encuentra inactivo!</mat-hint>
+                                            <mat-error
+                                                *ngIf="svcPedidoProductos.frmProdLineaMovil.controls[i].get(campo.clave).invalid && (svcPedidoProductos.frmProdLineaMovil.controls[i].get(campo.clave).dirty || svcPedidoProductos.frmProdLineaMovil.controls[i].get(campo.clave).touched)">
+                                                <mat-error
+                                                    *ngIf="svcPedidoProductos.frmProdLineaMovil.controls[i].get(campo.clave).errors.required">
+                                                    Este campo es obligatorio.</mat-error>
+                                                <mat-error
+                                                    *ngIf="svcPedidoProductos.frmProdLineaMovil.controls[i].get(campo.clave).errors.maxlength">
+                                                    Sobrepaso el numero maximo de caracteres.
+                                                </mat-error>
+                                                <mat-error
+                                                    *ngIf="svcPedidoProductos.frmProdLineaMovil.controls[i].get(campo.clave).errors.email">
+                                                    Ingrese un email valido.</mat-error>
+                                            </mat-error>
+                                        </mat-form-field>
+                                    </div>
+                                </ng-container>
+                            </div>
+                        </mat-card-content>
+                    </ng-container>
+                </mat-card>
+            </div>
+        </ng-container>
+
+    </ng-container>
+
+    <div class="col-12 col-md-6" *ngIf="svcPedidoProductos.frmProdLineaMovil.value.length < 5">
+        <mat-card class="card bg-light border-light">
+            <mat-card-header class="card-header d-flex justify-content-center">
+                <span>Linea Movil</span>
+            </mat-card-header>
+            <mat-card-content class="card-body d-flex justify-content-center">
+                <button type="button" mat-mini-fab color="primary" (click)="agregarProducto()">
+                    <mat-icon>add</mat-icon>
+                </button>
+            </mat-card-content>
+        </mat-card>
+    </div>
+</div>

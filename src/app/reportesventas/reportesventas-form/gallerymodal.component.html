@@ -1,0 +1,48 @@
+<div mat-dialog-title>
+  <div class="row">
+    <div class="col-8 d-flex justify-content-start">
+      <span *ngIf="archivoSeleccionado.tipoArchivo == 1" class="font-weight-bold pr-2">Imagen: </span>
+      <span *ngIf="archivoSeleccionado.tipoArchivo == 2" class="font-weight-bold pr-2">Audio: </span>
+      <span *ngIf="archivoSeleccionado.tipoArchivo == 3" class="font-weight-bold pr-2">Archivo: </span>
+
+      <span class="text-truncate"> {{archivoSeleccionado.nombreArchivo}}</span>
+    </div>
+    <div class="col-4 d-flex justify-content-end">
+      <a matTooltip="Descargar" type="button" mat-stroked-button class="d-flex align-items-center justify-content-center mx-2" [href]="archivoSeleccionado.urlArchivo" target="_blank">
+        <mat-icon class="w-100" color="primary"> cloud_download</mat-icon>
+      </a>
+      <!--<button mat-stroked-button class="d-flex align-items-center justify-content-center mx-2" type="button" (click)="onDownloadClick()">
+        <mat-icon class="w-100" color="primary"> cloud_download</mat-icon>
+      </button>-->
+      <button type="button" mat-stroked-button color="primary" class="d-flex align-items-center justify-content-center" (click)="onClose()"><mat-icon>close</mat-icon></button>
+    </div>
+  </div> 
+</div>
+
+<div mat-dialog-content>
+    <div class="row">
+      <div class="col-12 d-flex justify-content-center p-3">
+        <img *ngIf="archivoSeleccionado.tipoArchivo == 1" class="d-block img-fluid w-100" [src]="archivoSeleccionado.urlArchivo">
+        <img *ngIf="archivoSeleccionado.tipoArchivo == 2" class="d-block img-fluid" src="../../../assets/images/iconos/iconoArchivoAUDIO.png"/>
+        <img *ngIf="archivoSeleccionado.tipoArchivo == 3" class="d-block img-fluid" src="../../../assets/images/iconos/iconoArchivo.png"/>
+
+      </div> 
+    </div>
+</div>
+
+<div mat-dialog-actions>
+  <div class="row w-100">
+    <div class="col-6 d-flex justify-content-center">
+      <button mat-stroked-button  class="w-100 btn btn-light" type="button" *ngIf="indexSeleccionado!=0" mat-button (click)="cambioArchivoAnterior()">
+        <mat-icon>chevron_left</mat-icon>
+          Anterior
+      </button>
+    </div>
+    <div class="col-6 d-flex justify-content-center">
+      <button mat-stroked-button  class="w-100 btn btn-light" type="button" *ngIf="indexSeleccionado!=svcPedido.pedidoArchivos.length-1" mat-button (click)="cambioArchivoPosterior()">
+        Siguiente 
+        <mat-icon>chevron_right</mat-icon>
+      </button>
+    </div>
+  </div>
+</div>

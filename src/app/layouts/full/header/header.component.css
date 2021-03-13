@@ -1,0 +1,11 @@
+.btn-firma-icono{
+    position: absolute;
+    bottom: 0;
+    margin-bottom: 5px;
+    left: 0;
+    z-index: 10;
+}
+
+.mat-menu-item{
+    line-height: initial !important;
+}

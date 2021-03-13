@@ -1,0 +1,377 @@
+<mat-card-content>
+    <div class="row my-3">
+        <div class="col-12 col-sm-6 d-flexbox justify-content-start align-items-center text-center text-sm-left">
+            <mat-card-title>Reportes de Pedidos</mat-card-title>
+            <mat-card-subtitle>Mantenimientos</mat-card-subtitle>
+        </div>
+        <div class="col-12 col-sm-6 d-flex justify-content-center justify-content-sm-end align-items-center">
+            <button matTooltip="Descargar Excel" class="mr-2" mat-raised-button color="primary" style="cursor: pointer"
+                [matMenuTriggerFor]="buttonsDescargar">
+                <mat-icon> cloud_download</mat-icon>
+            </button>
+            <mat-menu #buttonsDescargar="matMenu" class="mymegamenu" style="width: fit-content;">
+                <button class="" mat-menu-item (click)="exportexcel('todo')">
+                    <span class="">
+                        Toda la Tabla
+                    </span>
+                </button>
+                <button class="" mat-menu-item (click)="exportexcel('filtro')">
+                    <span class="">
+                        Tabla Filtrada
+                    </span>
+                </button>
+            </mat-menu>
+            <!--<button mat-raised-button color="accent" (click)="crearPedido()">
+                <mat-icon>add</mat-icon>
+                <span class="d-none d-sm-inline text-truncate">Agregar Pedido</span>
+            </button>-->
+            <button mat-raised-button color="accent" [matMenuTriggerFor]="buttonsCreate">
+                <mat-icon>add</mat-icon> Agregar Pedido
+            </button>
+            <mat-menu #buttonsCreate="matMenu" class="mymegamenu" style="width: fit-content;">
+                <button class="" mat-menu-item (click)="crearPedido(0)">
+                    <span class="">
+                        Crear Pedido
+                    </span>
+                    <div class="d-inline">
+                        <mat-icon class="ml-0 mr-1 px-3 icono-crear-pedido-tit">create</mat-icon>
+                        <mat-icon class="icono-crear-pedido">add</mat-icon>
+                    </div>
+
+                </button>
+                <button class="" mat-menu-item (click)="crearPedido(1)">
+                    <span class="">
+                        Crear Firma
+                    </span>
+                    <div class="d-inline">
+                        <img class="ml-1 mr-0 pr-0 pl-3" src="../../../assets/images/iconos/firmaIcono.png" alt="">
+                        <mat-icon class="icono-crear-pedido">add</mat-icon>
+                    </div>
+                </button>
+            </mat-menu>
+        </div>
+    </div>
+
+    <form class="d-none d-sm-flex" [formGroup]="svcPedido.formFiltros">
+        <div class="row w-100">
+            <!--FILTRO POR DOCUMENTO-->
+            <div class="col-12 col-sm-6 col-lg-4">
+                <mat-form-field appearance="fill">
+                    <input matInput formControlName="nroDocumento" placeholder="Buscar Documento" autocomplete="off">
+                    <button mat-button matSuffix mat-icon-button aria-label="Clear"
+                        *ngIf="svcPedido.formFiltros.value.nroDocumento!=0" (click)="limpiarBuscadorTexto()">
+                        <mat-icon>close</mat-icon>
+                    </button>
+                </mat-form-field>
+            </div>
+            <!--FILTRO POR ESTADO PEDIDO-->
+            <div class="col-12 col-sm-6 col-lg-4">
+                <mat-form-field appearance="fill">
+                    <mat-label>Filtrar por Estado</mat-label>
+                    <mat-select formControlName="estado">
+                        <mat-option value=''>
+                            Todos
+                        </mat-option>
+                        <ng-container *ngIf="estadoPedido$ | async as estadopedido">
+                            <mat-option *ngFor="let estado of estadopedido.Resultado" [value]="estado.descripcion">
+                                {{estado.descripcion}}
+                            </mat-option>
+                        </ng-container>
+
+                    </mat-select>
+                </mat-form-field>
+            </div>
+            <!--FILTRO POR CAMPAÑA-->
+            <div class="col-12 col-sm-6 col-lg-4">
+                <mat-form-field appearance="fill">
+                    <mat-label>Filtrar por Campaña</mat-label>
+                    <mat-select formControlName="campana">
+                        <mat-option value=''>
+                            Todos
+                        </mat-option>
+                        <ng-container *ngIf="campanas$ | async as campanas">
+                            <mat-option *ngFor="let campana of campanas.Resultado" [value]="campana.descripcion">
+                                {{campana.descripcion}}
+                            </mat-option>
+                        </ng-container>
+                    </mat-select>
+                </mat-form-field>
+            </div>
+            <!--FILTRO POR CALL CENTER-->
+            <div class="col-12 col-sm-6 col-lg-4" *ngIf="svcLogin.getToken('login')?.idTipoUsuario!='1'">
+                <mat-form-field appearance="fill">
+                    <mat-label>Filtrar por Call Center</mat-label>
+                    <mat-select formControlName="callCenter">
+                        <mat-option value=''>
+                            Todos
+                        </mat-option>
+                        <ng-container *ngIf="callcenters$ | async as callcenters">
+                            <mat-option *ngFor="let callcenter of callcenters.Resultado"
+                                [value]="callcenter.descripcion">
+                                {{callcenter.descripcion}}
+                            </mat-option>
+                        </ng-container>
+                    </mat-select>
+                </mat-form-field>
+            </div>
+            <!--FILTRO POR ESTADO FIRMA-->
+            <div class="col-12 col-sm-6 col-lg-4">
+                <mat-form-field appearance="fill">
+                    <mat-label>Filtrar por Firma</mat-label>
+                    <mat-select formControlName="flagPedidoFirmado">
+                        <mat-option value=''>
+                            Todos
+                        </mat-option>
+                        <mat-option value='1'>
+                            Firmados
+                        </mat-option>
+                        <mat-option value='0'>
+                            No Firmados
+                        </mat-option>
+                    </mat-select>
+                </mat-form-field>
+            </div>
+            <!--FILTRO POR ESTADO PEDIDO ATIPICO-->
+            <div class="col-12 col-sm-6 col-lg-4">
+                <mat-form-field appearance="fill">
+                    <mat-label>Filtrar por Pedido</mat-label>
+                    <mat-select formControlName="flagPedidoAtipico">
+                        <mat-option value=''>
+                            Todos
+                        </mat-option>
+                        <mat-option value='0'>
+                            Pedidos Normales
+                        </mat-option>
+                        <mat-option value='1'>
+                            Pedidos-Firmas
+                        </mat-option>
+                    </mat-select>
+                </mat-form-field>
+            </div>
+        </div>
+    </form>
+    <mat-accordion class="d-flex d-sm-none">
+        <mat-expansion-panel>
+            <mat-expansion-panel-header>
+                <mat-panel-title>
+                    Abrir Filtros
+                </mat-panel-title>
+                <!--<mat-panel-description>
+                  Currently I am {{panelOpenState ? 'open' : 'closed'}}
+                </mat-panel-description>-->
+            </mat-expansion-panel-header>
+            <form class="col-12 p-0" [formGroup]="svcPedido.formFiltros">
+                <div class="row">
+                    <!--FILTRO POR DOCUMENTO-->
+                    <div class="col-12 col-sm-6 col-lg-3">
+                        <mat-form-field appearance="fill">
+                            <input matInput formControlName="nroDocumento" placeholder="Buscar Documento"
+                                autocomplete="off">
+                            <button mat-button matSuffix mat-icon-button aria-label="Clear"
+                                *ngIf="svcPedido.formFiltros.value.nroDocumento!=0" (click)="limpiarBuscadorTexto()">
+                                <mat-icon>close</mat-icon>
+                            </button>
+                        </mat-form-field>
+                    </div>
+                    <!--FILTRO POR ESTADO PEDIDO-->
+                    <div class="col-12 col-sm-6 col-lg-3">
+                        <mat-form-field appearance="fill">
+                            <mat-label>Filtrar por Estado</mat-label>
+                            <mat-select formControlName="estado">
+                                <mat-option value=''>
+                                    Todos
+                                </mat-option>
+                                <ng-container *ngIf="estadoPedido$ | async as estadopedido">
+                                    <mat-option *ngFor="let estado of estadopedido.Resultado"
+                                        [value]="estado.descripcion">
+                                        {{estado.descripcion}}
+                                    </mat-option>
+                                </ng-container>
+
+                            </mat-select>
+                        </mat-form-field>
+                    </div>
+                    <!--FILTRO POR CAMPAÑA-->
+                    <div class="col-12 col-sm-6 col-lg-3"
+                        *ngIf="svcLogin.getToken('login')?.idTipoUsuario=='2' || svcLogin.getToken('login')?.idTipoUsuario=='3'">
+                        <mat-form-field appearance="fill">
+                            <mat-label>Filtrar por Campaña</mat-label>
+                            <mat-select formControlName="campana">
+                                <mat-option value=''>
+                                    Todos
+                                </mat-option>
+                                <ng-container *ngIf="campanas$ | async as campanas">
+                                    <mat-option *ngFor="let campana of campanas.Resultado"
+                                        [value]="campana.descripcion">
+                                        {{campana.descripcion}}
+                                    </mat-option>
+                                </ng-container>
+                            </mat-select>
+                        </mat-form-field>
+                    </div>
+                    <!--FILTRO POR CALL CENTER-->
+                    <div class="col-12 col-sm-6 col-lg-3" *ngIf="svcLogin.getToken('login')?.idTipoUsuario!='1'">
+                        <mat-form-field appearance="fill">
+                            <mat-label>Filtrar por Call Center</mat-label>
+                            <mat-select formControlName="callCenter">
+                                <mat-option value=''>
+                                    Todos
+                                </mat-option>
+                                <ng-container *ngIf="callcenters$ | async as callcenters">
+                                    <mat-option *ngFor="let callcenter of callcenters.Resultado"
+                                        [value]="callcenter.descripcion">
+                                        {{callcenter.descripcion}}
+                                    </mat-option>
+                                </ng-container>
+                            </mat-select>
+                        </mat-form-field>
+                    </div>
+                    <!--FILTRO POR ESTADO FIRMA-->
+                    <div class="col-12 col-sm-6 col-lg-2">
+                        <mat-form-field appearance="fill">
+                            <mat-label>Filtrar por Firma</mat-label>
+                            <mat-select formControlName="flagPedidoFirmado">
+                                <mat-option value=''>
+                                    Todos
+                                </mat-option>
+                                <mat-option value='1'>
+                                    Firmados
+                                </mat-option>
+                                <mat-option value='0'>
+                                    No Firmados
+                                </mat-option>
+                            </mat-select>
+                        </mat-form-field>
+                    </div>
+                    <!--FILTRO POR ESTADO PEDIDO ATIPICO-->
+                    <div class="col-12 col-sm-6 col-lg-2">
+                        <mat-form-field appearance="fill">
+                            <mat-label>Filtrar por Pedido</mat-label>
+                            <mat-select formControlName="flagPedidoAtipico">
+                                <mat-option value=''>
+                                    Todos
+                                </mat-option>
+                                <mat-option value='0'>
+                                    Pedidos Normales
+                                </mat-option>
+                                <mat-option value='1'>
+                                    Pedidos-Firmas
+                                </mat-option>
+                            </mat-select>
+                        </mat-form-field>
+                    </div>
+                </div>
+
+            </form>
+        </mat-expansion-panel>
+    </mat-accordion>
+
+    <div class="row">
+        <div class="col-12">
+            <ng-container *ngIf="contadorPedidos!=undefined">
+                <span style="font-weight: bold;">Se encontrarón {{contadorPedidos}} pedido(s)</span>
+                <button matTooltip="Actualizar tabla" mat-icon-button color="primary" (click)="actualizarComponente()">
+                    <mat-icon>loop</mat-icon>
+                </button>
+            </ng-container>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-12 table-responsive">
+            <table mat-table [dataSource]="dataSource" matSort id="excel-table" multiTemplateDataRows>
+                <ng-container *ngFor="let columna of columnas" matColumnDef="{{ columna.definicion }}">
+                    <th mat-header-cell *matHeaderCellDef mat-sort-header class="px-3">
+                        {{ columna.titulo }}
+                    </th>
+                    <td mat-cell *matCellDef="let element" [style.background-color]="element.color" class="px-3">
+                        {{ element[columna.definicion] }}</td>
+                </ng-container>
+
+                <ng-container matColumnDef="acciones">
+                    <th mat-header-cell *matHeaderCellDef mat-sort-header></th>
+                    <td mat-cell *matCellDef="let element" [style.background-color]="element.color" class="">
+                        <button matTooltip="Editar Pedido" class="btn-Acciones"
+                            [ngClass]="{'d-none': svcLogin.getToken('login')?.idTipoUsuario==1 && element.idEstadoPedido>1}"
+                            type="button" mat-icon-button (click)="editarPedido(element)">
+                            <mat-icon>edit</mat-icon>
+                        </button>
+                        <button matTooltip="Abrir Comentarios" class="btn-Acciones" type="button" mat-icon-button
+                            (click)="abrirPedidoComentarios(element)">
+                            <mat-icon>comment</mat-icon>
+                        </button>
+                    </td>
+                </ng-container>
+                <ng-container matColumnDef="acciones2">
+                    <th mat-header-cell *matHeaderCellDef mat-sort-header></th>
+                    <td mat-cell *matCellDef="let element" [style.background-color]="element.color">
+                        <button matTooltip="Ver Firma" class="btn-Acciones" *ngIf="element.urlImagenFirma!=''"
+                            type="button" mat-icon-button (click)="abrirFirmaPedido(element)"><img
+                                src="../../../assets/images/iconos/firmaIcono.png" alt=""></button>
+                        <button matTooltip="Copiar enlace" class="btn-Acciones" *ngIf="element.urlImagenFirma==''"
+                            type="button" mat-icon-button [cdkCopyToClipboard]="obtenerUrlFirma(element)">
+                            <mat-icon>link</mat-icon>
+                        </button>
+                        <button matTooltip="Eliminar" class="btn-Acciones"
+                            *ngIf="svcLogin.getToken('login')?.idTipoUsuario == 3" mat-icon-button
+                            (click)="eliminarPedido(element.idPedido)">
+                            <mat-icon>delete</mat-icon>
+                        </button>
+                    </td>
+                </ng-container>
+
+                <!-- Expanded Content Column - The detail row is made up of this one column that spans across all columns -->
+                <ng-container matColumnDef="expandedDetail">
+                    <td mat-cell *matCellDef="let element" [attr.colspan]="displayedColumns.length"
+                        [style.background-color]="element.color">
+                        <div class="row example-element-detail"
+                            [@detailExpand]="element.idPedido == elementIdPedido ? 'expanded' : 'collapsed'">
+                            <div class="col-12 d-flex justify-content-center my-2"
+                                style="background-color: #eeeeee; border: 3px dashed #c4c4c4;">
+                                <img [src]="element.urlImagenFirma" alt="" class="img-fluid img-firma">
+                                <div class="col-12 d-flex justify-content-center div-btn-element-detail m-2">
+                                    <button class="btn-element-detail mx-2" type="button" mat-raised-button
+                                        (click)="eliminarFirma(element)">
+                                        Reiniciar <mat-icon color="warn">delete_forever</mat-icon>
+                                    </button>
+                                    <a class="btn-element-detail mx-2" type="button" mat-raised-button
+                                        [href]="element.urlImagenFirma" target="_blank">
+                                        Descargar <mat-icon color="primary">cloud_download</mat-icon>
+                                    </a>
+                                </div>
+                            </div>
+
+
+                        </div>
+                    </td>
+                </ng-container>
+
+                <ng-container matColumnDef="loading">
+                    <td mat-footer-cell *matFooterCellDef colspan="12">
+                        <mat-progress-bar mode="indeterminate"></mat-progress-bar>
+                    </td>
+                </ng-container>
+                <ng-container matColumnDef="noData">
+                    <td mat-footer-cell *matFooterCellDef colspan="6">
+                        {{ mensajeData }}
+                    </td>
+                </ng-container>
+                <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+                <!--<tr mat-row *matRowDef="let row; columns: displayedColumns;" [ngStyle]="{'border' : row.IdPedido == rowSeleccionado ? 'dashed 5px #3f51b5' : 'thin' }"></tr>-->
+
+                <tr mat-row *matRowDef="let row; columns: displayedColumns;"
+                    [ngStyle]="{'border' : row.idPedido == rowSeleccionado ? 'dashed 3px #3f51b5' : 'thin' }"
+                    class="example-element-row" [class.example-expanded-row]="elementIdPedido === element?.idPedido">
+                </tr>
+                <tr mat-row *matRowDef="let row; columns: ['expandedDetail']" class="example-detail-row"></tr>
+
+                <tr mat-footer-row *matFooterRowDef="['loading']" [ngClass]="{'hide':dataSource!=null}"></tr>
+                <tr mat-footer-row *matFooterRowDef="['noData']"
+                    [ngClass]="{'hide':!(dataSource!=null && dataSource.data.length==0)}"></tr>
+            </table>
+            <mat-paginator [pageSizeOptions]="[5, 10, 25, 100]" [pageSize]="10" showFirstLastButtons></mat-paginator>
+        </div>
+    </div>
+
+
+</mat-card-content>

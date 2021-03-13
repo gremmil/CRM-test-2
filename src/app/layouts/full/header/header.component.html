@@ -1,0 +1,86 @@
+<!-- ============================================================== -->
+<!-- Profile - style you can find in header.scss -->
+<!-- ============================================================== -->
+<!--<a href="https://wrappixel.com/templates/materialpro-angular-dashboard/" class=" m-r-20 hidden-sm-up" mat-raised-button color="warn">Upgrade To Pro</a>-->
+
+<!--NOTIFICACIONES-FIRMAS-PEDIDOS-->
+<button mat-icon-button class="mr-3 mt-2" [matMenuTriggerFor]="notFirmas" 
+[matMenuTriggerData]="{notificacionesFirmas: notificacionesFirmas}">
+    <mat-icon  [matBadge]="contadorNotificacionesFirmas" 
+    [matBadgeHidden]="contadorNotificacionesFirmas==0" matBadgeColor="warn" 
+    [matBadgeHidden]="visible" matBadgeSize="medium">
+        mail
+    </mat-icon>
+</button>
+<mat-menu #notFirmas="matMenu" class="mymegamenu">
+    <ng-template matMenuContent let-notificacionesFirmas="notificacionesFirmas">
+        <ng-container *ngIf="contadorNotificacionesFirmas==0">
+            <button mat-menu-item>
+                <span class="mx-2">Sin notificaciones disponibles</span>
+            </button>
+        </ng-container>
+        <ng-container *ngFor="let item of notificacionesFirmas">
+            <button class="py-2" mat-menu-item (click)="abrirNotificacion(item.idPedido, 'firmas')" style="height: auto;">
+                    <img width="24px" src="../../../../assets/images/iconos/firmaIcono-warn.png" alt="">
+                    <span class="pl-3">{{item.notificacionNombreDocumento}}</span><br>
+
+                    <div class="d-flex justify-content-end">
+                        <span>{{item.notificacionDescripcion}}</span>
+                    </div>
+        
+                    
+                    
+                   
+            </button>
+        </ng-container>
+    </ng-template>
+</mat-menu>
+<!--NOTIFICACIONES-COMENTARIOS-PEDIDOS-->
+<button mat-icon-button class="mr-3 mt-2" [matMenuTriggerFor]="notComentarios" 
+[matMenuTriggerData]="{notificacionesComentarios: notificacionesComentarios}">
+    <mat-icon  [matBadge]="contadorNotificacionesComentarios" 
+    [matBadgeHidden]="contadorNotificacionesComentarios==0" matBadgeColor="warn" 
+    [matBadgeHidden]="visible" matBadgeSize="medium">
+        notifications_active
+    </mat-icon>
+</button>
+<mat-menu #notComentarios="matMenu" class="mymegamenu">
+    <ng-template matMenuContent let-notificacionesComentarios="notificacionesComentarios">
+        <ng-container *ngIf="contadorNotificacionesComentarios==0">
+            <button mat-menu-item>
+                <span class="mx-2">Sin notificaciones disponibles</span>
+            </button>
+        </ng-container>
+        <ng-container *ngFor="let item of notificacionesComentarios">
+            <button mat-menu-item (click)="abrirNotificacion(item.idPedido, 'comentarios')">
+                <mat-icon color="warn">notification_important</mat-icon>
+                <span>
+                    {{item.notificacion}}
+                </span>
+            </button>
+        </ng-container>
+    </ng-template>
+</mat-menu>
+
+<!--CERRAR SESION-->
+<button [matMenuTriggerFor]="profile" mat-icon-button class="m-r-5"> <img src="assets/images/aldiProfile.jpg" alt="user" class="profile-pic"></button>
+<mat-menu #profile="matMenu" class="mymegamenu">
+    <mat-card>
+        <mat-card-header>
+            <mat-card-title>{{svcLogin.getToken('login')?.nombreCompleto}}</mat-card-title>
+            <mat-card-subtitle>{{svcLogin.getToken('login')?.tipoUsuario}}</mat-card-subtitle>
+        </mat-card-header>
+        <mat-card-actions> 
+            <button mat-menu-item (click)="cerrarSesion()">
+                <mat-icon color="warn">exit_to_app</mat-icon> Cerrar Sesión
+            </button>
+        </mat-card-actions>
+    </mat-card>
+    <!--<button mat-menu-item>
+        <mat-icon>settings</mat-icon> Settings </button>
+    <button mat-menu-item>
+        <mat-icon>account_box</mat-icon> Profile </button>
+    <button mat-menu-item>
+        <mat-icon>notifications_off</mat-icon> Disable notifications </button>-->
+
+</mat-menu>

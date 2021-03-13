@@ -1,0 +1,79 @@
+<div class="row">
+    <div class="col-12 col-sm-10 col-md-9 my-2 my-sm-auto">
+        <mat-chip-list class="example-chip d-flex justify-content-center text-center">
+            <mat-chip class="example-box">
+                <span class="d-block">
+                    {{ svcPedidoCabecera.campanasFiltro[0]?.archivosAdjuntos }}
+                </span>
+            </mat-chip>
+        </mat-chip-list>
+    </div>
+    <div class="col-12 col-sm-2 col-md-3 d-flex justify-content-center justify-content-sm-end my-2 my-sm-auto">
+        <button class="w-100 mx-5 mx-sm-auto" type="button" mat-stroked-button color="primary" (click)="mostrarDialogoArchivo()">
+            <mat-icon>add</mat-icon> <span class="d-none d-sm-none d-md-inline">Añadir</span>
+        </button>
+    </div>
+</div>
+
+<input style="display: none" type="file" #fileInput2 (change)="seleccionarArchivo($event)" />
+
+<ng-container [formGroup]="svcPedido.formGeneral">
+    <ng-container formArrayName="pedidoArchivos">
+        <div class="row my-2">
+            <ng-container *ngFor="let _ of svcPedido.pedidoArchivos.controls; index as i">
+                <ng-container [formGroupName]="i">
+                    <div class="col-md-3 card p-3">
+                        <div
+                            *ngIf="svcPedido.pedidoArchivos.controls[i].value.urlArchivo==''; then cargandoArchivo else archivoCargado">
+                        </div>
+                        <ng-template #cargandoArchivo>
+                            <mat-progress-spinner class="mx-auto px-auto my-auto" mode="indeterminate" diameter="30">
+                            </mat-progress-spinner>
+    
+                            <!--<mat-progress-spinner class="mx-auto px-auto my-auto" *ngIf="svcPedido.pedidoArchivos.controls[i].value.progreso<100"
+                                mode="determinate" diameter="30"
+                                [value]="svcPedido.pedidoArchivos.controls[i].value.progreso">
+                            </mat-progress-spinner>-->
+                        </ng-template>
+                        <ng-template #archivoCargado>
+    
+                            <ng-container *ngIf="svcPedido.pedidoArchivos.controls[i].value.tipoArchivo==1">
+                                <img 
+                                class="d-block img-fluid mx-auto my-auto"
+                                [src]="svcPedido.pedidoArchivos.controls[i].value.urlArchivo"
+                                (click)="abrirGaleria(i)" />
+                            </ng-container>
+    
+                            <ng-container *ngIf="svcPedido.pedidoArchivos.controls[i].value.tipoArchivo==2">
+                                <img 
+                                class="d-block img-fluid mx-auto my-auto"
+                                src="../../../assets/images/iconos/iconoArchivoAUDIO.png"
+                                (click)="abrirGaleria(i)" />
+                                <p class="card-text pt-2">{{svcPedido.pedidoArchivos.controls[i].value.nombreArchivo}}</p>
+                            </ng-container>
+    
+                            <ng-container *ngIf="svcPedido.pedidoArchivos.controls[i].value.tipoArchivo==3">
+                                <img 
+                                class="d-block img-fluid mx-auto my-auto"
+                                src="../../../assets/images/iconos/iconoArchivo.png"
+                                (click)="abrirGaleria(i)" />
+                                <p class="card-text pt-2">{{svcPedido.pedidoArchivos.controls[i].value.nombreArchivo}}</p>
+                            </ng-container>
+                            
+                        </ng-template>
+    
+                        <button matTooltip="Eliminar" class="btn-card-image" type="button" mat-icon-button
+                            (click)="eliminarArchivo(i)">
+                            <mat-icon color="warn">delete_forever</mat-icon>
+                        </button>
+                    </div>
+                </ng-container>
+            </ng-container>
+    
+    
+    
+        </div>
+    
+    </ng-container>
+</ng-container>
+

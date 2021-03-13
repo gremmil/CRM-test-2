@@ -1,0 +1,21 @@
+<div class="row m-1">
+    <div class="d-flex justify-content-start align-items-center mx-1">
+        <span>
+            {{ mensajeNotificacion }}
+        </span>
+    </div>
+    <div class="d-flex justify-content-end align-items-center mx-1">
+        <ng-container *ngIf="accion=='exito'; else iconoError">
+            <mat-icon color="accent">
+                check_circle_outline
+            </mat-icon>
+        </ng-container>
+        <ng-template #iconoError>
+            <mat-icon color="warn">
+                error_outline
+            </mat-icon>
+        </ng-template>
+    </div>
+
+</div>
+

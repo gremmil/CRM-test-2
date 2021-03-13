@@ -1,0 +1,210 @@
+<!-- Image and text -->
+<nav class="navbar px-5 d-flex align-items-center" style="background-color: black;">
+  <a *ngIf="pedidoToken" class="navbar-brand">
+    <img [src]="pedidoToken.logoCampana" class="img-fluid" width="135" height="45" [alt]="pedidoToken.campana" />
+  </a>
+  <div>
+    <h5 class="font-weight-bold text-monospace" [ngStyle]="{'color': pedidoToken?.color}">FIRMA DIGITAL</h5>
+  </div>
+
+
+
+</nav>
+
+<div class="container mt-5">
+  <div class="row">
+    <div class="card text-center w-100">
+      <div class="card-header" [ngStyle]="{'background-color': pedidoToken?.color}">
+        <mat-icon class="icono-card-header">perm_contact_calendar</mat-icon>
+        <div class="my-2">
+          <span class="font-weight-bold text-monospace">{{ pedidoToken?.tipoDocumento }} :</span> <span
+            class="text-monospace"> {{ pedidoToken?.nroDocumento }}</span> <br>
+          <span class="font-weight-bold text-monospace">NOMBRES :</span> <span class="text-monospace">
+            {{ pedidoToken?.nombreCompleto }}</span>
+        </div>
+      </div>
+      <div class="card-body">
+
+        <h3 class="card-title my-3 font-weight-bold text-monospace">Pedido</h3>
+        <div class="row mx-5">
+          <div class="col-sm-12 col-md-4 my-3">
+            <div class="player">
+              <div class="front">
+                <button class="contenedor-icono-card-body my-2" [ngStyle]="{'background-color': pedidoToken?.color}">
+                  <mat-icon class="icono-card-body">add_ic_call</mat-icon>
+                </button> <br>
+                <h5 class="font-weight-bold text-monospace">{{ pedidoToken?.productoFibra }}</h5>
+              </div>
+              <div class="back">
+              </div>
+            </div>
+          </div>
+          <div class="col-sm-12 col-md-4 my-3">
+            <button class="contenedor-icono-card-body my-2" [ngStyle]="{'background-color': pedidoToken?.color}">
+              <mat-icon class="icono-card-body">sim_card</mat-icon>
+            </button>
+            <div class="d-block">
+              <h5 class="font-weight-bold text-monospace d-inline">{{ pedidoToken?.productoLineaMovilTitulo }}</h5>
+              <button matTooltip="Ver Lineas" mat-icon-button [matMenuTriggerFor]="listaLineasMoviles"
+                [matMenuTriggerData]="{lineasMoviles: pedidoToken?.productoLineaMovilDescripcion}">
+                <mat-icon>
+                  more_vert
+                </mat-icon>
+              </button>
+              <mat-menu #listaLineasMoviles="matMenu" class="mymegamenu">
+                <ng-template matMenuContent let-lineasMoviles="lineasMoviles">
+                  <ng-container *ngIf="pedidoToken?.productoLineaMovilDescripcion.length==0">
+                    <span class="mx-2">Sin Lineas Moviles</span>
+                  </ng-container>
+                  <ng-container *ngFor="let item of lineasMoviles">
+                    <div class="d-block m-2">
+                      <mat-icon>sd_card</mat-icon>
+                      <span class="font-weight-bold text-monospace pb-3">
+                        {{item}}
+                      </span>
+                    </div>
+
+                  </ng-container>
+                </ng-template>
+              </mat-menu>
+            </div>
+
+
+
+
+            <!--<div class="player" [class.voted]="flippedProductoLineasMoviles">
+              <div class="front">
+                <button class="contenedor-icono-card-body my-2" [ngStyle]="{'background-color': pedidoToken?.color}">
+                  <mat-icon class="icono-card-body">sim_card</mat-icon>
+                </button> <br>
+              </div>
+              <div class="back">
+                <ul class="text-align-left">
+                  <li *ngFor="let item of pedidoToken?.productoLineaMovilDescripcion">
+                    <span class="font-weight-bold text-monospace">{{item}}</span>
+                  </li>
+                </ul>
+              </div>
+            </div>-->
+
+          </div>
+          <div class="col-sm-12 col-md-4 my-3">
+
+            <button class="contenedor-icono-card-body my-2" [ngStyle]="{'background-color': pedidoToken?.color}">
+              <mat-icon class="icono-card-body">euro</mat-icon>
+            </button> <br>
+            <span class="font-weight-bold text-monospace">{{ pedidoToken?.costesTitulo }}</span> <br>
+            <h5 class="font-weight-bold text-monospace">{{ pedidoToken?.costesDescripcion }}</h5>
+          </div>
+        </div>
+        <ng-container *ngIf="pedidoToken">
+          <div class="row mx-1" *ngIf="pedidoToken?.urlImagenFirma==''; else notificacionDeFirmaEnviada">
+            <div id="contenedor-canvas" class="w-100" (window:resize)="onResize($event)">
+              <ng-container *ngIf="flagEnvio == false; else notificacionDeEnvio">
+                <div class="canvas-indicaciones d-flex align-items-center justify-content-center"
+                  *ngIf="signaturePad?.toData().length == 0">
+                  <span class="text-monospace">[FIRMA AQUÍ]</span>
+                </div>
+              </ng-container>
+
+              <ng-template #notificacionDeEnvio>
+                <div class="canvas-indicaciones d-flex align-items-center justify-content-center">
+                  <ng-container *ngIf="mensajeConfirmacion==undefined; else mConfirmacion">
+                    <mat-progress-spinner *ngIf="progresoImagen>=0 && progresoImagen<100"
+                       [ngStyle]="{'stroke': pedidoToken.color}" mode="determinate" [value]="progresoImagen" diameter="40">
+                    </mat-progress-spinner>
+                    <mat-progress-spinner *ngIf="progresoImagen==100"
+                     [ngStyle]="{'stroke': pedidoToken.color}" mode="indeterminate" diameter="40">
+                    </mat-progress-spinner>
+                  </ng-container>
+                  <ng-template #mConfirmacion>
+                    <mat-chip-list>
+                      <mat-chip [ngStyle]="{'background-color': pedidoToken.color}" selected>
+                        <mat-icon style="color: black;">check_circle</mat-icon>
+                        <span class="text-monospace text-dark"> {{ mensajeConfirmacion }}</span>
+                      </mat-chip>
+                    </mat-chip-list>
+                  </ng-template>
+                </div>
+              </ng-template>
+
+              <div class="row w-100 canvas-botones" *ngIf="isFullScreen">
+                <div class="col-6 d-flex justify-content-start">
+                  <button mat-raised-button class="btn btn-block" [ngStyle]="{'background-color': pedidoToken.color}"
+                    (click)="enviarFirma()" [disabled]="flagEnvio==true">
+                    <span class="text-monospace text-dark font-weight-bold h5">Enviar</span>
+                  </button>
+                </div>
+                <div class="col-6 d-flex justify-content-end">
+                  <button mat-icon-button matTooltip="Eliminar" class="btn btn-canvas mx-1" (click)="limpiar()"
+                    [disabled]="flagEnvio==true">
+                    <mat-icon>delete_forever</mat-icon>
+                  </button>
+                  <button mat-icon-button matTooltip="Anterior" class="btn btn-canvas mx-1" (click)="atras()"
+                    [disabled]="flagEnvio==true">
+                    <mat-icon>undo</mat-icon>
+                  </button>
+                  <button mat-icon-button matTooltip="Reducir" class="screen btn btn-canvas mx-1" (click)="closeFullscreen()">
+                    <mat-icon>fullscreen_exit</mat-icon>
+                  </button>
+                </div>
+              </div>
+              <div class="canvas-gif" [@animacionIconoTouch]="estadoAnimacion? 'inicio' : 'fin'"
+                *ngIf="signaturePad?.toData().length==0 || signaturePad==undefined">
+                <mat-icon>touch_app</mat-icon>
+              </div>
+              <canvas id="responsive-canvas" #sPad style="touch-action: none; background-color: #f2f2f2;"></canvas>
+            </div>
+          </div>
+          <ng-template #notificacionDeFirmaEnviada>
+            <div class="row mx-5 my-3 d-flex justify-content-center">
+              <mat-chip-list>
+                <mat-chip class="p-3 d-block chip-firma" [ngStyle]="{'background-color': pedidoToken.color}" selected>
+                  <mat-icon style="color: black;">check_circle</mat-icon>
+                  <h4 class="text-monospace text-dark">
+                    Ya enviaste tu firma
+                  </h4>
+                  <span class="text-monospace text-dark">
+                    Si hay algun problema con tu firma comunicate por el medio que te mandaron la URL de la firma
+                  </span>
+                </mat-chip>
+              </mat-chip-list>
+            </div>
+          </ng-template>
+        </ng-container>
+
+
+
+      </div>
+      <div class="card-footer text-muted" *ngIf="pedidoToken?.urlImagenFirma==''">
+        <div class="row d-flex">
+          <div class="col-6 my-2">
+            <button mat-raised-button class="btn btn-block btn-success"
+              [ngStyle]="{'background-color': pedidoToken.color}" (click)="enviarFirma()" [disabled]="flagEnvio==true">
+              <span class="text-monospace text-dark font-weight-bold h5">Enviar</span>
+            </button>
+          </div>
+          <div class="col-6 d-flex justify-content-end my-2">
+            <button mat-icon-button matTooltip="Eliminar" class="btn mx-1 btn-canvas" (click)="limpiar()"
+              [disabled]="flagEnvio==true">
+              <mat-icon>delete_forever</mat-icon>
+            </button>
+            <button mat-icon-button matTooltip="Anterior" class="btn mx-1 btn-canvas" (click)="atras()"
+              [disabled]="flagEnvio==true">
+              <mat-icon>undo</mat-icon>
+            </button>
+            <button mat-icon-button matTooltip="Expandir" class="screen btn mx-1 btn-canvas d-md-none"
+              *ngIf="!isFullScreen" (click)="openFullscreen()">
+              <mat-icon>fullscreen</mat-icon>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<ng-template #spinner>
+  <mat-spinner></mat-spinner>
+</ng-template>

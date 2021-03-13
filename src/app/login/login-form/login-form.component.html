@@ -1,0 +1,48 @@
+<mat-progress-bar *ngIf="spinnerON" mode="indeterminate"></mat-progress-bar>
+<div mat-dialog-title class="row justify-content-center">
+        <mat-toolbar>
+            <img src="../../../assets/images/sipLogoLogin.PNG" alt="" class="d-block mx-auto img-fluid w-50" height="">
+        </mat-toolbar>
+</div>
+<form [formGroup]="svcLogin.form" class="py-4 px-2 px-md-3" (submit)="onSubmit()">
+    <div mat-dialog-content>
+        <div class="row justify-content-center">
+            <ng-container *ngFor="let campo of svcLogin.camposForm">
+                <div [class]="campo.cols" class="my-2">
+                    <mat-form-field>
+                        <input [formControlName]="campo.clave" matInput [placeholder]="campo.titulo"
+                            [type]="campo.tipo">
+                        <mat-error>Este campo es obligatorio.</mat-error>
+                        <!--<mat-error *ngIf="svcLogin.form.controls['mobile'].errors?.required">This field is mandatory.</mat-error>
+                            <mat-error *ngIf="svcLogin.form.controls['mobile'].errors?.minlength">Minimum 8 charactors needed.</mat-error>-->
+                    </mat-form-field>
+                </div>
+            </ng-container>
+        </div>
+            
+       
+
+    </div>
+    <div mat-dialog-actions class="row justify-content-center">
+ 
+            <div class="col-6">
+                <button mat-stroked-button class="w-100 text-center" mat-raised-button color="primary" type="submit"
+                    [disabled]="svcLogin.form.invalid">
+                    <span>Ingresar</span>
+                </button>
+            </div>
+            <div class="col-6">
+                <button mat-stroked-button class="w-100 text-center" mat-raised-button color="warn" type="button"
+                    (click)="onClear()">
+                    <span>Limpiar</span>
+                </button>
+            </div>
+
+        <!--VERSION SIP-->
+        <div class="col-12 d-flex justify-content-end my-2">
+            <span>
+                v 2.0.2
+            </span>
+        </div>
+    </div>
+</form>

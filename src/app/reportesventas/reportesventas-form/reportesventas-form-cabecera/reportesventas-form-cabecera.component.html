@@ -1,0 +1,82 @@
+<div class="row" [formGroup]="svcPedido.pedidoCabecera">
+    <ng-container *ngFor="let campo of svcPedidoCabecera.camposForm">
+        <!--------TEXT-------->
+        <div *ngIf="campo.tipo == 'text'" [class]="campo.cols" class="my-2">
+            <mat-form-field>
+                <input [formControlName]="campo.clave" matInput [placeholder]="campo.titulo" />
+                    <mat-error *ngIf="
+        svcPedidoCabecera.form.get(campo.clave).invalid &&
+        (svcPedidoCabecera.form.get(campo.clave).dirty ||
+          svcPedidoCabecera.form.get(campo.clave).touched)
+    ">
+                        <mat-error *ngIf="svcPedidoCabecera.form.get(campo.clave).errors.required">Este campo es
+                            obligatorio.</mat-error>
+                        <mat-error *ngIf="svcPedidoCabecera.form.get(campo.clave).errors.maxlength">Sobrepaso el
+                            numero maximo de caracteres.</mat-error>
+                        <mat-error *ngIf="svcPedidoCabecera.form.get(campo.clave).errors.email">Ingrese un email
+                            valido.</mat-error>
+                    </mat-error>
+            </mat-form-field>
+        </div>
+        <!------------SELECT------------->
+        <div *ngIf="campo.tipo == 'select'" [class]="campo.cols" class="my-2">
+            <mat-form-field>
+                <mat-select [formControlName]="campo.clave" [placeholder]="campo.titulo">
+                    <ng-container *ngIf="campo.clave == 'idCampana'">
+                        <mat-option>{{ campo.titulo }}</mat-option>
+                        <mat-option *ngFor="let option of campanas" [value]="option['idCampana']">
+                            {{ option.descripcion }}</mat-option>
+                    </ng-container>
+                    <ng-container *ngIf="campo.clave == 'idTipoDocumento'">
+                        <mat-option>{{ campo.titulo }}</mat-option>
+                        <ng-container *ngIf="tiposDocumentos$ | async as tipoDocumento">
+                            <mat-option *ngFor="let option of tipoDocumento.Resultado"
+                                [value]="option['idTipoDocumento']">{{ option.descripcion }}
+                            </mat-option>
+                        </ng-container>
+                    </ng-container>
+                    <ng-container *ngIf="campo.clave == 'idProvincia'">
+                        <mat-option>{{ campo.titulo }}</mat-option>
+                        <ng-container *ngIf="provincias$ | async as provincias">
+                            <mat-option *ngFor="let option of provincias.Resultado"
+                                [value]="option['idProvincia']">{{ option.descripcion }}</mat-option>
+                        </ng-container>
+                    </ng-container>
+                </mat-select>
+                <mat-error *ngIf="
+    svcPedidoCabecera.form.get(campo.clave).invalid &&
+    (svcPedidoCabecera.form.get(campo.clave).dirty ||
+      svcPedidoCabecera.form.get(campo.clave).touched)
+">
+                    <mat-error *ngIf="svcPedidoCabecera.form.get(campo.clave).errors.required">Este campo es
+                        obligatorio.</mat-error>
+                    <mat-error *ngIf="svcPedidoCabecera.form.get(campo.clave).errors.maxlength">Sobrepaso el
+                        numero maximo de caracteres.</mat-error>
+                    <mat-error *ngIf="svcPedidoCabecera.form.get(campo.clave).errors.email">Ingrese un email
+                        valido.</mat-error>
+                </mat-error>
+            </mat-form-field>
+        </div>
+        <!--DATE-->
+        <div *ngIf="campo.tipo == 'date'" [class]="campo.cols" class="my-2">
+            <mat-form-field>
+                <input type="date" [formControlName]="campo.clave" matInput
+                    [placeholder]="campo.titulo" />
+                <mat-error *ngIf="
+    svcPedidoCabecera.form.get(campo.clave).invalid &&
+    (svcPedidoCabecera.form.get(campo.clave).dirty ||
+      svcPedidoCabecera.form.get(campo.clave).touched)
+">
+                    <mat-error *ngIf="svcPedidoCabecera.form.get(campo.clave).errors.required">Este campo es
+                        obligatorio.</mat-error>
+                    <mat-error *ngIf="svcPedidoCabecera.form.get(campo.clave).errors.maxlength">Sobrepaso el
+                        numero maximo de caracteres.</mat-error>
+                    <mat-error *ngIf="svcPedidoCabecera.form.get(campo.clave).errors.email">Ingrese un email
+                        valido.</mat-error>
+                </mat-error>
+                <!--<mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+                <mat-datepicker #picker></mat-datepicker>-->
+            </mat-form-field>
+        </div>
+    </ng-container>   
+</div>

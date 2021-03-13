@@ -1,0 +1,77 @@
+<mat-card-content>
+    <div class="row my-3">
+        <div class="col-12 col-sm-6 d-flexbox justify-content-start align-items-center text-center text-sm-left">
+            <mat-card-title>{{componenteActualTitulo}}</mat-card-title>
+            <mat-card-subtitle>Mantenimientos</mat-card-subtitle>
+        </div>
+        <div class="col-12 col-sm-6 d-flex justify-content-center justify-content-sm-end align-items-center">
+            <button mat-raised-button color="accent" (click)="onCreate()"><mat-icon>add</mat-icon>
+                <span> Agregar {{componenteActualParrafo}}</span>
+            </button>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-12 col-md-6">
+            <mat-form-field appearance="fill">
+                <mat-label>Buscar Registro</mat-label>
+                <input matInput [(ngModel)]="searchKey" autocomplete="off" (keyup)="applyFilter()">
+                <button mat-button matSuffix mat-icon-button aria-label="Clear" *ngIf="searchKey" (click)="onSearchClear()">
+                      <mat-icon>close</mat-icon>
+                </button>
+            </mat-form-field>
+        </div>
+        <div class="col-12 col-md-6 d-flex justify-content-end align-items-center">
+            <ng-container *ngIf="dataSource?.data!=undefined">
+                <span style="font-weight: bold;">Se encontrarón {{dataSource?.data.length}} {{componenteActualParrafo}}{{sufijo}}</span>
+                <button matTooltip="Actualizar tabla" mat-icon-button color="primary" (click)="actualizarComponente()"> <mat-icon>loop</mat-icon></button>
+            </ng-container>
+        </div>
+    </div>
+    <!--<div class="row">
+        <div class="col-12">
+            <ng-container *ngIf="dataSource?.data!=undefined">
+                <span style="font-weight: bold;">Se encontrarón {{dataSource?.data.length}} {{this.service.componenteActual}}(s)</span>
+                <button matTooltip="Actualizar tabla" mat-icon-button color="primary" (click)="actualizarComponente()"> <mat-icon>loop</mat-icon></button>
+            </ng-container>
+        </div>
+         
+    </div>-->
+    <div class="row">
+        <div class="col-12 table-responsive">
+            <table mat-table [dataSource]="dataSource" matSort>
+    
+                <ng-container *ngFor="let columna of columnas" matColumnDef="{{ columna.definicion }}">
+                    <th mat-header-cell *matHeaderCellDef mat-sort-header class="px-3">
+                        {{ columna.titulo }}
+                    </th>
+                    <td mat-cell *matCellDef="let element" class="px-3">{{ element[columna.definicion] }}</td>
+                </ng-container>
+        
+                <ng-container matColumnDef="acciones">
+                    <th mat-header-cell *matHeaderCellDef></th>
+                    <td mat-cell *matCellDef="let row" class="px-3">
+                        <button mat-icon-button (click)="onEdit(row)"><i class="material-icons">edit</i></button>
+                        <!--<button mat-icon-button color="warn"><mat-icon>delete_outline</mat-icon></button>-->
+                    </td>
+                </ng-container>
+                <ng-container matColumnDef="loading">
+                    <td mat-footer-cell *matFooterCellDef colspan="12">
+                        <mat-progress-bar mode="indeterminate"></mat-progress-bar>
+                    </td>
+                </ng-container>
+                <ng-container matColumnDef="noData">
+                    <td mat-footer-cell *matFooterCellDef colspan="6">
+                        {{ mensajeData }}
+                    </td>
+                </ng-container>
+                <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+                <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+                <tr mat-footer-row *matFooterRowDef="['loading']" [ngClass]="{'hide':dataSource!=null}"></tr>
+                <tr mat-footer-row *matFooterRowDef="['noData']" [ngClass]="{'hide':!(dataSource!=null && dataSource.data.length==0)}"></tr>
+        </table>
+        <mat-paginator [pageSizeOptions]="[5, 10, 25, 100]" [pageSize]="10" showFirstLastButtons></mat-paginator>
+        </div>
+    </div>
+    
+
+</mat-card-content>

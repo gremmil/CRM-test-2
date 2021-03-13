@@ -1,0 +1,125 @@
+<div mat-dialog-title class="mat-elevation-z8">
+    <div class="row d-flex justify-content-end align-items-center p-2">
+        <div class="col-10 d-flex justify-content-start align-items-center">
+            
+            <span *ngIf="flagEdicionFormulario!=undefined">{{ flagEdicionFormulario==0?"Crear":"Editar"}} {{componenteActual}}</span>
+        </div>
+        <div class="col-2 d-flex justify-content-end align-items-center">
+            <button class="btn-dialog-close" mat-fab color="primary" (click)="cerrarFormulario()" tabIndex="-1"><mat-icon>clear</mat-icon></button>
+        </div>
+    </div>
+</div>
+
+
+<form [formGroup]="form" (submit)="enviarFormulario()">
+    <div mat-dialog-content>
+        <div class="row">
+            <ng-container *ngFor="let campo of camposForm">
+            <!--TEXTS-->
+            <div *ngIf="campo.tipo == 'text'" [class]="campo.cols" class="my-2">
+                <mat-form-field>
+                    <input [formControlName]="campo.clave" matInput [placeholder]="campo.titulo">
+                    <mat-error>Este campo es obligatorio.</mat-error>
+                    <!--<mat-error *ngIf="service.form.controls['mobile'].errors?.required">This field is mandatory.</mat-error>
+                    <mat-error *ngIf="service.form.controls['mobile'].errors?.minlength">Minimum 8 charactors needed.</mat-error>-->
+                </mat-form-field>
+            </div>
+            <!--RADIO GROUP-->
+            <div *ngIf="campo.tipo == 'radio'" [class]="campo.cols" class="my-2">
+                <mat-radio-group [formControlName]="campo.clave">
+                    <mat-radio-button value="1">Male</mat-radio-button>
+                    <mat-radio-button value="2">Female</mat-radio-button>
+                    <mat-radio-button value="3">Other</mat-radio-button>
+                </mat-radio-group>
+            </div>
+            <!--SELECT-->
+            <div *ngIf="campo.tipo == 'select'" [class]="campo.cols" class="my-2">
+                <mat-form-field>
+                    <ng-container *ngIf="campo.clave != 'idCallCenter';else selectCallCenters">
+                        <mat-select [formControlName]="campo.clave" [placeholder]="campo.titulo">
+                            <ng-container *ngIf="campo.clave=='idTipoProducto'">
+                                <mat-option disabled>{{campo.titulo}}</mat-option>
+                                <ng-container *ngIf="tipoProductos$ | async as datos">
+                                    <mat-option *ngFor="let option of datos.Resultado" [value]="option[campo.clave]">{{ option.descripcion }}</mat-option>
+                                </ng-container>
+                            </ng-container>
+                            <ng-container *ngIf="campo.clave=='idCampana'">
+                                <mat-option disabled>{{campo.titulo}}</mat-option>
+                                <ng-container *ngIf="campanas$ | async as datos">
+                                    <mat-option *ngFor="let option of datos.Resultado" [value]="option[campo.clave]">{{ option.descripcion }}</mat-option>
+                                </ng-container>
+                            </ng-container>
+                            <ng-container *ngIf="campo.clave=='idTipoUsuario'">
+                                <mat-option disabled>{{campo.titulo}}</mat-option>
+                                <ng-container *ngIf="tipoUsuarios$ | async as datos">
+                                    <mat-option *ngFor="let option of datos.Resultado" [value]="option[campo.clave]">{{ option.descripcion }}</mat-option>
+                                </ng-container>
+                            </ng-container>
+                            <!--<ng-container *ngIf="campo.clave=='idCallCenter'">
+                                <mat-option>{{campo.titulo}}</mat-option>
+                                <ng-container *ngIf="callcenters$ | async as datos">
+                                    <mat-option *ngFor="let option of datos.Resultado" [value]="option[campo.clave]">{{ option.descripcion }}</mat-option>
+                                </ng-container>
+                            </ng-container>-->
+                        </mat-select>
+                    </ng-container>
+                    <ng-template #selectCallCenters>
+                        <mat-select *ngIf="form.controls['idTipoUsuario'].value!=2" [formControlName]="campo.clave" [placeholder]="campo.titulo">
+                            <mat-option disabled>{{campo.titulo}}</mat-option>
+                            <ng-container *ngIf="callcenters$ | async as datos">
+                                <mat-option *ngFor="let option of datos.Resultado" [value]="option[campo.clave]">{{ option.descripcion }}</mat-option>
+                            </ng-container> 
+                        </mat-select>
+                        <mat-select *ngIf="form.controls['idTipoUsuario'].value==2" [placeholder]="campo.titulo" (selectionChange)="cambioSelect($event.value)" [value]="callCentersBackOffice" multiple>
+                            <mat-option disabled>{{campo.titulo}}</mat-option>
+                            <ng-container *ngIf="callcenters$ | async as datos">
+                                <mat-option *ngFor="let option of datos.Resultado" [value]="option[campo.clave]">{{ option.descripcion }}</mat-option>
+                            </ng-container>
+                        </mat-select>
+                    </ng-template>
+                    <mat-error>Este campo es obligatorio.</mat-error>
+
+                   
+                </mat-form-field>
+            </div>
+            <!--DATE-->
+            <div *ngIf="campo.tipo == 'date'" [class]="campo.cols" class="my-2">
+                <mat-form-field>
+                    <input [formControlName]="campo.clave" matInput [matDatepicker]="picker" [placeholder]="campo.titulo">
+                    <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+                    <mat-datepicker #picker></mat-datepicker>
+                </mat-form-field>
+            </div>
+            <!--CHECK BOX-->
+            <div *ngIf="campo.tipo == 'checkbox'"[class]="campo.cols" class="my-2">
+                <mat-checkbox [formControlName]="campo.clave">Permanent Employee</mat-checkbox>
+            </div>
+            <!--TEXT AREA-->
+            <div *ngIf="campo.tipo == 'textarea'" [class]="campo.cols" class="my-2">
+                <mat-form-field appearance="fill">
+                    <mat-label>{{campo.titulo}}</mat-label>
+                    <textarea [formControlName]="campo.clave" matInput></textarea>
+                    <mat-error>Este campo es obligatorio.</mat-error>
+
+                </mat-form-field>
+            </div>
+            <!--SWITCH-->
+            <div *ngIf="campo.tipo == 'switch'" [class]="campo.cols" class="my-2 d-flex justify-content-start align-items-center">
+                <span class="mx-2">
+                    {{campo.titulo}}
+                </span>
+                <mat-slide-toggle [formControlName]="campo.clave"></mat-slide-toggle>
+            </div>
+            </ng-container>
+        </div>
+    </div>
+    <div mat-dialog-actions class="row justify-content-end align-items-center py-2 bg-light">
+        <!--SUBMIT AND CLEAR-->
+            <div class="col-6 col-md-3">
+                <button mat-raised-button color="primary" type="submit" class="w-100" [disabled]="form.invalid">Enviar</button>
+            </div>
+            <div class="col-6 col-md-3">
+                <button mat-raised-button color="warn" type="button" class="w-100" (click)="limpiarFormulario()">Limpiar</button>
+            </div>
+    </div>
+</form>

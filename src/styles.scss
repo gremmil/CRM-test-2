@@ -1,0 +1,103 @@
+/* You can add global styles to this file, and also import other style files */
+
+//html, body { height: 100%; }
+//body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+
+/* You can add global styles to this file, and also import other style files */
+
+@import "~@angular/material/prebuilt-themes/indigo-pink.css";
+/*@import "~@angular/material/prebuilt-themes/pink-bluegrey.css";*/
+/*
+warn = #f44336
+*/
+
+mat-hint{
+    color: #f44336 !important
+}
+/* notification */
+
+snack-bar-container.success {
+    color: #fff;
+}
+
+snack-bar-container.warn {
+    color: #fff;
+}
+
+snack-bar-container.notification simple-snack-bar {
+    font-weight: bold;
+}
+
+.fill-remaining-space {
+    /* This fills the remaining space, by using flexbox. 
+       Every toolbar row uses a flexbox row layout. */
+    flex: 1 1 auto;
+}
+
+/* radio group */
+
+mat-radio-group mat-radio-button {
+    margin-left: 5px;
+}
+
+.button-row button {
+    margin: 5px;
+}
+
+/* mat-table */
+
+mat-footer-row mat-footer-cell {
+    justify-content: center;
+    font-style: italic;
+}
+
+/*CUSTOM*/
+.mat-header-row {
+    background-color: #303030 !important;
+}
+.mat-header-cell {
+    font-weight: 900 !important;
+    font-size: small !important;
+    color: #99abb4 !important;
+}
+
+.dialog-chat .mat-dialog-container {
+    padding: 0% !important;
+    width: 400px;
+}
+
+.mat-menu-panel {
+    max-width: 100% !important;
+}
+.dialog-form-pedidos{
+    width: 70vw !important;
+}
+.dialog-form-pedidos-atipicos, .dialog-form-mantenimientos{
+    width: 50vw !important;
+}
+.dialog-form-pedidos-firmas, .dialog-form-mantenimientos{
+    width: 50vw !important;
+}
+@media (max-width: 991px){
+    /*.dialog-form-pedidos-firmas, .dialog-form-mantenimientos{
+        width: 100vw !important;
+        max-width: 100vw !important;
+    }*/
+    .dialog-form-pedidos{
+        width: 85vw !important;
+        max-width: 85vw !important;
+    }
+    .dialog-form-pedidos-atipicos,  .dialog-form-mantenimientos{
+        width: 75vw !important;
+    }
+}
+@media (max-width: 768px){
+    .dialog-chat {
+        left: 0 !important;
+        right: 0 !important;
+    }
+    .dialog-form-pedidos, .dialog-form-pedidos-atipicos, .dialog-form-mantenimientos{
+        width: 100vw !important;
+        max-width: 100vw !important;
+    }
+}
