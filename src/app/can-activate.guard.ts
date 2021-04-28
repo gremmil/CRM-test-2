@@ -16,6 +16,8 @@ export class CanActivateGuard implements CanActivate {
   canActivate(
     next: ActivatedRouteSnapshot,
     state: RouterStateSnapshot): Observable<boolean | UrlTree> | Promise<boolean | UrlTree> | boolean | UrlTree {
+      
+      console.log(state)
       if(this.serviceLogin.isLoggedIn(state.url)){
         return true;
       }

@@ -21,18 +21,6 @@ const MENUITEMS = [
     icon: 'add_business'
   },
   {
-    state: 'campanas',
-    type: 'link',
-    name: 'Campañas',
-    icon: 'post_add'
-  },
-  {
-    state: 'planes',
-    type: 'link',
-    name: 'Planes',
-    icon: 'add_to_home_screen'
-  },
-  {
     state: 'usuarios',
     type: 'link',
     name: 'Usuarios',

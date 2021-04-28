@@ -12,15 +12,6 @@ import { TipoUsuarioService } from './svcMaestros/tipo-usuario.service';
 import { LoginService } from './svcGeneral/login.service';
 import { DialogService } from './svcCustom/dialog.service';
 
-import { PedidoService } from './svcPedidos/pedido.service';
-import { PedidoCabeceraService } from './svcPedidos/pedido-cabecera.service';
-import { PedidoArchivosService } from './svcPedidos/pedido-archivos.service';
-import { PedidoProductosService } from './svcPedidos/pedido-productos.service';
-import { PedidoCostesService } from './svcPedidos/pedido-costes.service';
-import { PedidoAtipicosService } from './svcPedidos/pedido-atipicos.service';
-import { PedidoFirmasService } from './svcPedidos/pedido-firmas.service'
-
-
 import { ListarOperadorService} from './svcMaestros/listar-operador.service';
 import { ListarProvinciaService} from './svcMaestros/listar-provincia.service';
 import { ListarTipoPlanService} from './svcMaestros/listar-tipo-plan.service';
@@ -56,13 +47,6 @@ import { AccordionAnchorDirective, AccordionLinkDirective, AccordionDirective } 
     TipoProductoService,
     TipoUsuarioService,
     LoginService,
-    PedidoService,
-    PedidoCabeceraService,
-    PedidoArchivosService,
-    PedidoProductosService,
-    PedidoCostesService,
-    PedidoAtipicosService,
-    PedidoFirmasService,
     ListarOperadorService,
     ListarProvinciaService,
     ListarTipoPlanService,

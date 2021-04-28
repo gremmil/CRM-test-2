@@ -7,6 +7,7 @@ import { NotificationService } from 'src/app/shared/svcCustom/notification.servi
 import { Router } from '@angular/router';
 import { MatDialogRef } from '@angular/material/dialog';
 import { Apimodel } from 'src/app/models/modelGeneral/apimodel';
+import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'app-login-form',
@@ -14,7 +15,7 @@ import { Apimodel } from 'src/app/models/modelGeneral/apimodel';
   styleUrls: ['./login-form.component.css']
 })
 export class LoginFormComponent implements OnInit {
-
+  version = environment.version;
   routeRedirect = ''
   spinnerON = false
   constructor(

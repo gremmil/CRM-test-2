@@ -14,17 +14,13 @@ export const AppRoutes: Routes = [
     children:[
       {
         path: '',
-        redirectTo: '/reportesventas',
+        redirectTo: '/mantenimientos/callcenters',
         pathMatch: 'full'
       },
       {
         path: 'mantenimientos',
         loadChildren: () => import('./mantenimientos/mantenimientos.module').then(m => m.MantenimientosModule)
       },
-      {
-        path: 'reportesventas',
-        loadChildren: () => import('./reportesventas/reportesventas.module').then(m => m.ReportesventasModule)
-      }
     ]
   },
   {
@@ -32,11 +28,6 @@ export const AppRoutes: Routes = [
     loadChildren: 
       () => import('./login/login.module').then(m => m.LoginModule)
   },
-  {
-    path: 'firmas',
-    loadChildren: 
-      () => import('./firmasdigitales/firmasdigitales.module').then(m => m.FirmasdigitalesModule)
-  }
 ];
 
 @NgModule({
